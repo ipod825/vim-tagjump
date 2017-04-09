@@ -1,6 +1,6 @@
 ## TagJump
 
-Jumping with tags is a pain if you are used to tabs. TagJump open a new tab when you jump. In addition, it automatically close the tab when you jump back (< C-t >). This prevents you create duplicate tabs when you jump to the same file multiple times.
+Jumping with tags is a pain if you are used to tabs. TagJump open a new tab when you jump (when the file is already open, it will jump to the opened tab, i.e. behaves like `tab drop`). It also automatically close the tab when you jump back with `<C-t>`. This prevents you from creating duplicate tabs when you jump to the same file multiple times.
 
 ### Installation
 
