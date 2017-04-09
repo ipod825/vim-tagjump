@@ -1,6 +1,6 @@
 ## TagJump
 
-Jumping with tags is a pain if you are used to tabs. TagJump open a new tab when you jump (when the file is already open, it will jump to the opened tab, i.e. behaves like `tab drop`). It also automatically close the tab when you jump back with `<C-t>`. This prevents you from creating duplicate tabs when you jump to the same file multiple times.
+Jumping with tags in vim is a pain if you are used to tabs. TagJump open a new tab (or go to the tab already opening the file, i.e. `tab drop` behavior) when you jump with tags. It also automatically close the tab when you jump back with `<C-t>`. This prevents you from creating duplicate tabs when you jump to the same file multiple times.
 
 ### Installation
 
