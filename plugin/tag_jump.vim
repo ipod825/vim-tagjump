@@ -6,46 +6,63 @@
 " License: MIT
 " =============================================================================
 
-nnoremap <C-]> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>:call CleanDup()<CR>
-nnoremap <C-t> <C-t>:call JumpIfDup()<CR>
+
+nnoremap <C-]> :call PushTag()<CR>
+nnoremap <C-t> :call PopTag()<CR>
 
 fu! FindDup()
-    let l:currentTabNr = tabpagenr()
-    let l:currentBufNr = bufnr('%')
-    let l:dup = l:currentTabNr
+    let l:curTab = tabpagenr()
+    let l:curBuf = bufnr('%')
+    let l:dup = l:curTab
     for t in range(1, tabpagenr('$'))
-        if t == currentTabNr
+        if t == l:curTab
             continue
         endif
 
         for buf in tabpagebuflist(t)
-            if buf == currentBufNr
+            if buf == curBuf
                 let l:dup = t
             endif
         endfor
     endfor
 
-    if l:dup != l:currentTabNr
+    if l:dup != l:curTab
         return l:dup
     else
         return -1
     endif
 endfu
 
-fu! CleanDup()
+fu! JumpAndClose(target)
+    let l:curBuf = bufnr('%')
+    let l:curTab = tabpagenr()
+    exec "tabfirst"
+    exec "tabnext ".a:target
+    exec "tabclose ".l:curTab
+endfu
+
+fu! PushTag()
+    execute "tag ".expand("<cword>")
+    tab split
+    tabp
+    pop
+    tabn
     let l:dup = FindDup()
-    if l:dup>0
-        exec "tabclose ".l:dup
+    if l:dup >0
+        let l:oldBuf = bufnr('%')
+        let l:currentPos = getpos('.')
+        call JumpAndClose(l:dup)
+        while bufnr('%') != l:oldBuf
+            wincmd w
+        endwhile
+        call setpos('.', l:currentPos)
     endif
 endfu
 
-fu! JumpIfDup()
+fu! PopTag()
+    pop
     let l:dup = FindDup()
     if l:dup >0
-        let l:currentBufNr = bufnr('%')
-        let l:currentTabNr = tabpagenr()
-        exec "tabfirst"
-        exec "tabnext ".l:dup
-        exec "tabclose ".l:currentTabNr
+        call JumpAndClose(l:dup)
     endif
 endfu
