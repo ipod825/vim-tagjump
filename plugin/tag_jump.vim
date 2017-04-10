@@ -34,28 +34,36 @@ fu! FindDup()
 endfu
 
 fu! JumpAndClose(target)
-    let l:curBuf = bufnr('%')
-    let l:curTab = tabpagenr()
+    let l:tar = a:target
+    if winnr('$')==1 && a:target>tabpagenr()
+        let l:tar = l:tar-1
+    endif
+    close
     exec "tabfirst"
-    exec "tabnext ".a:target
-    exec "tabclose ".l:curTab
+    exec "tabnext ".l:tar
 endfu
 
 fu! PushTag()
+    let l:buf = bufnr('%')
     execute "tag ".expand("<cword>")
+    " if stay in the same buffer, do nothinh more
+    if bufnr('%')==l:buf
+        return
+    endif
     tab split
     tabp
     pop
     tabn
     let l:dup = FindDup()
-    if l:dup >0
-        let l:oldBuf = bufnr('%')
-        let l:currentPos = getpos('.')
-        call JumpAndClose(l:dup)
-        while bufnr('%') != l:oldBuf
+    if l:dup>0
+        let l:buf = bufnr('%')
+        let l:tab = tabpagenr()
+        exec "tabfirst"
+        exec "tabnext ".l:dup
+        while bufnr('%') != l:buf
             wincmd w
         endwhile
-        call setpos('.', l:currentPos)
+        call JumpAndClose(l:tab)
     endif
 endfu
 
